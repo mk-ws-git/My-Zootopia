@@ -1,77 +1,99 @@
 import json
 
 
+def get_nested_value(obj, keys):
+    """Return nested dict value or None."""
+    current = obj
+    for key in keys:
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
+
+
+def serialize_field(label, value):
+    """Return one <li> field line or '' if missing."""
+    if value is None:
+        return ""
+    if isinstance(value, str) and value.strip() == "":
+        return ""
+    return (
+        '      <li class="card__list-item">'
+        "<strong>" + label + ":</strong> "
+        + str(value)
+        + "</li>\n"
+    )
+
+
 def serialize_animal(animal_obj):
-    """
-    Convert a single animal object into an HTML <li> card string.
-    """
+    """Return one animal card as HTML."""
     output = ""
+
+    name = animal_obj.get("name")
+    scientific_name = get_nested_value(animal_obj, ["taxonomy", "scientific_name"])
+    characteristics = animal_obj.get("characteristics", {})
+    locations = animal_obj.get("locations", [])
 
     output += '<li class="cards__item">\n'
 
-    # Title (Name)
-    if "name" in animal_obj:
-        output += '  <div class="card__title">' + animal_obj["name"] + "</div>\n"
+    if name:
+        output += '  <div class="card__title">' + name + "</div>\n"
 
-    output += '  <p class="card__text">\n'
+    if scientific_name:
+        output += '  <div class="card__subtitle"><em>' + scientific_name + "</em></div>\n"
 
-    # Subtitle (Scientific Name)
-    if "taxonomy" in animal_obj and "scientific_name" in animal_obj["taxonomy"]:
-        sci = animal_obj["taxonomy"]["scientific_name"]
-        output += '  <div class="card__subtitle"><em>' + sci + "</em></div>\n"
+    output += '  <div class="card__text">\n'
+    output += '    <ul class="card__list">\n'
 
-    # Diet
-    if "characteristics" in animal_obj and "diet" in animal_obj["characteristics"]:
-        diet = animal_obj["characteristics"]["diet"]
-        output += "      <strong>Diet:</strong> " + diet + "<br/>\n"
+    output += serialize_field("Diet", characteristics.get("diet"))
 
-    # First location
-    if "locations" in animal_obj and len(animal_obj["locations"]) > 0:
-        location = animal_obj["locations"][0]
-        output += "      <strong>Location:</strong> " + location + "<br/>\n"
+    if isinstance(locations, list) and len(locations) > 0:
+        output += serialize_field("Locations", ", ".join(locations))
 
-    # Type
-    if "characteristics" in animal_obj and "type" in animal_obj["characteristics"]:
-        animal_type = animal_obj["characteristics"]["type"]
-        output += "      <strong>Type:</strong> " + animal_type + "<br/>\n"
+    output += serialize_field("Type", characteristics.get("type"))
+    output += serialize_field("Group", characteristics.get("group"))
+    output += serialize_field("Habitat", characteristics.get("habitat"))
+    output += serialize_field("Lifespan", characteristics.get("lifespan"))
+    output += serialize_field("Top speed", characteristics.get("top_speed"))
+    output += serialize_field("Weight", characteristics.get("weight"))
+    output += serialize_field("Length", characteristics.get("length"))
+    output += serialize_field("Distinctive feature", characteristics.get("distinctive_feature"))
+    output += serialize_field("Temperament", characteristics.get("temperament"))
+    output += serialize_field("Slogan", characteristics.get("slogan"))
 
-    output += "  </p>\n"
-    output += "</li>\n\n"
+    output += "    </ul>\n"
+    output += "  </div>\n"
+    output += "</li>\n"
 
     return output
 
 
 def build_animals_output(animals):
-    """
-    Build the full HTML string for all animals.
-    """
+    """Return HTML for all animal cards."""
     output = ""
-    for animal_obj in animals:
+    sorted_animals = sorted(animals, key=lambda a: a.get("name", "").lower())
+
+    for animal_obj in sorted_animals:
         output += serialize_animal(animal_obj)
+        output += "\n"
+
     return output
 
 
 def read_file(filepath):
-    """
-    Read and return the content of a text file.
-    """
+    """Read text file content."""
     with open(filepath, "r", encoding="utf-8") as f:
         return f.read()
 
 
 def write_file(filepath, content):
-    """
-    Write the given content to a text file.
-    """
+    """Write text file content."""
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
 
 
 def main():
-    """
-    Main program function.
-    Reads data, builds HTML, and writes output file.
-    """
+    """Generate animals.html from JSON + template."""
     animals = json.loads(read_file("animals_data.json"))
     html_template = read_file("animals_template.html")
 
