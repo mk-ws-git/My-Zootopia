@@ -1,6 +1,19 @@
-<html>
+<html lang="en">
     <head>
+        <meta charset="utf-8">
+        <title>My Animal Repository</title>
         <style>
+        /* --- Browser-safe color variables --- */
+        :root {
+          --gray-darker: #444444;
+          --gray-dark: #696969;
+          --gray: #999999;
+          --gray-light: #cccccc;
+          --gray-lighter: #ececec;
+          --gray-lightest: #f3f3f3;
+        }
+
+        /* --- Original color variables (kept, browser ignores) --- */
         @gray-darker:               #444444;
         @gray-dark:                 #696969;
         @gray:                      #999999;
@@ -49,7 +62,7 @@
         }
 
         .card__title {
-          color: @gray-dark;
+          color: var(--gray-dark); /* fixed: was @gray-dark */
           font-size: 1.25rem;
           font-weight: 300;
           letter-spacing: 2px;
@@ -63,6 +76,7 @@
           margin-bottom: 1.25rem;
         }
 
+        /* --- Added: subtitle + divider --- */
         .card__subtitle {
           font-size: 0.85rem;
           color: #666;
@@ -71,6 +85,7 @@
           border-bottom: 1px solid #e6e6ef;
         }
 
+        /* --- Added: internal list styling --- */
         .card__list {
           list-style: none;
           margin: 0;
@@ -95,92 +110,174 @@
     </head>
     <body>
         <h1>My Animal Repository</h1>
+
         <ul class="cards">
-            Name: American Foxhound
-Diet: Omnivore
-Location: North-America
-Type: Hound
+            <li class="cards__item">
+  <div class="card__title">Arctic Fox</div>
+  <div class="card__subtitle"><em>Vulpes lagopus</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Carnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Eurasia, Europe, North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Polar forest regions</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 7 - 10 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 30 mph</li>
+      <li class="card__list-item"><strong>Distinctive feature:</strong> Thick fur that changes colour with season</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Arctic Fox
-Diet: Carnivore
-Location: Eurasia
-Type: Mammal
+<li class="cards__item">
+  <div class="card__title">Cross Fox</div>
+  <div class="card__subtitle"><em>Vulpes vulpes</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Carnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Forests, prairies, deserts, mountains, cities, suburbs, tundra, scrub, near rivers, farms</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 10 to 15 years in captivity, seven years in the wild</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 31 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Cross Fox
-Diet: Carnivore
-Location: North-America
-Type: mammal
+<li class="cards__item">
+  <div class="card__title">Darwin’s fox</div>
+  <div class="card__subtitle"><em>Lycalopex fulvipes</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> South-America</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Temperate rainforests, shrubland</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> Seven years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 45 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Darwin’s fox
-Diet: Omnivore
-Location: South-America
-Type: Mammal
+<li class="cards__item">
+  <div class="card__title">Fennec Fox</div>
+  <div class="card__subtitle"><em>Vulpes zerda</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Africa, Asia</li>
+      <li class="card__list-item"><strong>Group:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Sandy and semi-arid desert</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 10 - 14 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 25 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: English Foxhound
-Diet: Omnivore
-Location: Europe
+<li class="cards__item">
+  <div class="card__title">Fox</div>
+  <div class="card__subtitle"><em>Vulpes vulpes</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Carnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Africa, Asia, Eurasia, Europe, North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Woodland areas and urban parks</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 3 - 11 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 29 mph</li>
+      <li class="card__list-item"><strong>Distinctive feature:</strong> Pointed ears and long bushy tail</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Fennec Fox
-Diet: Omnivore
-Location: Africa
+<li class="cards__item">
+  <div class="card__title">Fox Squirrel</div>
+  <div class="card__subtitle"><em>Sciurus niger</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Central-America, North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> rodent</li>
+      <li class="card__list-item"><strong>Group:</strong> social</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Leaf nests and tree dens</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 6-12.6 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 17 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Fox
-Diet: Carnivore
-Location: Africa
-Type: Mammal
+<li class="cards__item">
+  <div class="card__title">Gray Fox</div>
+  <div class="card__subtitle"><em>Urocyon cinereoargenteus</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Central-America, North-America, South-America</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Forests and plains</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 6-12 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 28 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Fox Snakes
-Diet: Carnivore
-Location: North-America
+<li class="cards__item">
+  <div class="card__title">Kit Fox</div>
+  <div class="card__subtitle"><em>Vulpes macrotis merriam</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Central-America, North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> mammal</li>
+      <li class="card__list-item"><strong>Group:</strong> solitary</li>
+      <li class="card__list-item"><strong>Habitat:</strong> desert, grasslands</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> seven years in the wild. 12 years in captivity</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 25 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Fox Squirrel
-Diet: Omnivore
-Location: Central-America
-Type: rodent
+<li class="cards__item">
+  <div class="card__title">Marble Fox</div>
+  <div class="card__subtitle"><em>Vulpes vulpes</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Omnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> North-America</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Human captivity</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> Up to 15 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 30 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Fox Terrier
-Diet: Omnivore
-Location: Europe
+<li class="cards__item">
+  <div class="card__title">Tibetan Fox</div>
+  <div class="card__subtitle"><em>Vulpes ferrilata</em></div>
+  <div class="card__text">
+    <ul class="card__list">
+      <li class="card__list-item"><strong>Diet:</strong> Carnivore</li>
+      <li class="card__list-item"><strong>Locations:</strong> Asia</li>
+      <li class="card__list-item"><strong>Type:</strong> Mammal</li>
+      <li class="card__list-item"><strong>Habitat:</strong> Tibetan Plateau</li>
+      <li class="card__list-item"><strong>Lifespan:</strong> 8-10 years</li>
+      <li class="card__list-item"><strong>Top speed:</strong> 44 mph</li>
+      <li class="card__list-item"><strong>Skin type:</strong> Fur</li>
+    </ul>
+  </div>
+</li>
 
-Name: Golden-Crowned Flying Fox
-Diet: Herbivore
-Location: Asia
 
-Name: Gray Fox
-Diet: Omnivore
-Location: Central-America
-Type: Mammal
-
-Name: Kit Fox
-Diet: Omnivore
-Location: Central-America
-Type: mammal
-
-Name: Marble Fox
-Diet: Omnivore
-Location: North-America
-Type: Mammal
-
-Name: Red Fox
-Diet: Omnivore
-Location: Africa
-
-Name: Smooth Fox Terrier
-Diet: Omnivore
-Location: Europe
-
-Name: Tibetan Fox
-Diet: Carnivore
-Location: Asia
-Type: Mammal
-
-Name: Toy Fox Terrier
-Diet: Omnivore
-Location: North-America
-
-Name: Wire Fox Terrier
-Diet: Omnivore
-Location: Europe
         </ul>
+
     </body>
 </html>

@@ -1,7 +1,5 @@
 import json
 
-from pygame.threads import FuncResult
-
 
 def get_nested_value(obj, keys):
     """Return nested dict value or None."""
@@ -112,7 +110,9 @@ def filter_by_skin_type(animals, selected_skin_type):
     for animal in animals:
         if "characteristics" in animal and "skin_type" in animal["characteristics"]:
             skin_type = animal["characteristics"]["skin_type"]
-            if skin_type == selected_skin_type:
+            # compare trimmed values so minor whitespace differences don't prevent a match
+            if isinstance(skin_type, str) and isinstance(selected_skin_type, str) and \
+               skin_type.strip() == selected_skin_type:
                 filtered.append(animal)
 
     return filtered
@@ -148,14 +148,28 @@ def main():
     animals_output = build_animals_output(filtered_animals)
 
     # Optional: show which filter was used by replacing a placeholder if you have one
-    new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_output)
+    # Make this defensive: ensure new_html is always defined even if placeholder missing
+    if "__REPLACE_ANIMALS_INFO__" in html_template:
+        new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_output)
+    else:
+        # try to insert before the first closing </ul> (the cards list)
+        if "</ul>" in html_template:
+            new_html = html_template.replace("</ul>", animals_output + "\n</ul>", 1)
+        else:
+            # fallback: append the animals output to the end of the template
+            new_html = html_template + "\n" + animals_output
 
-    # 5) Write output file
-    write_file("animals.html", new_html)
+    # 5) Write output file (wrapped for clearer error message on failure)
+    try:
+        write_file("animals.html", new_html)
+    except Exception as e:
+        print("Failed to write animals.html:", e)
+        raise
 
     print("\nanimals.html has been created.")
     print("Filter used: skin_type =", selected)
     print("Animals shown:", len(filtered_animals))
 
 
-main()
+if __name__ == '__main__':
+    main()
