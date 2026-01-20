@@ -1,5 +1,7 @@
 import json
 
+from pygame.threads import FuncResult
+
 
 def get_nested_value(obj, keys):
     """Return nested dict value or None."""
@@ -55,11 +57,9 @@ def serialize_animal(animal_obj):
     output += serialize_field("Habitat", characteristics.get("habitat"))
     output += serialize_field("Lifespan", characteristics.get("lifespan"))
     output += serialize_field("Top speed", characteristics.get("top_speed"))
-    output += serialize_field("Weight", characteristics.get("weight"))
-    output += serialize_field("Length", characteristics.get("length"))
     output += serialize_field("Distinctive feature", characteristics.get("distinctive_feature"))
     output += serialize_field("Temperament", characteristics.get("temperament"))
-    output += serialize_field("Slogan", characteristics.get("slogan"))
+    output += serialize_field("Skin type", characteristics.get("skin_type"))
 
     output += "    </ul>\n"
     output += "  </div>\n"
@@ -92,16 +92,70 @@ def write_file(filepath, content):
         f.write(content)
 
 
+def get_skin_types(animals):
+    """Return a sorted list of unique skin_type values."""
+    skin_types_set = set()
+
+    for animal in animals:
+        if "characteristics" in animal and "skin_type" in animal["characteristics"]:
+            skin_type = animal["characteristics"]["skin_type"]
+            if isinstance(skin_type, str) and skin_type.strip() != "":
+                skin_types_set.add(skin_type.strip())
+
+    return sorted(list(skin_types_set))
+
+
+def filter_by_skin_type(animals, selected_skin_type):
+    """Return only animals that match the selected skin_type."""
+    filtered = []
+
+    for animal in animals:
+        if "characteristics" in animal and "skin_type" in animal["characteristics"]:
+            skin_type = animal["characteristics"]["skin_type"]
+            if skin_type == selected_skin_type:
+                filtered.append(animal)
+
+    return filtered
+
+
 def main():
-    """Generate animals.html from JSON + template."""
+    """Prompt for skin_type, then generate animals.html."""
     animals = json.loads(read_file("animals_data.json"))
     html_template = read_file("animals_template.html")
 
-    animals_output = build_animals_output(animals)
+    # 1) Show available skin types
+    skin_types = get_skin_types(animals)
+
+    print("Available skin_type values:")
+    for skin_type in skin_types:
+        print("-", skin_type)
+
+    # Animals missing skin_type will NOT be included in filtered results.
+    print("\nNote: animals with missing skin_type will be excluded.\n")
+
+    # 2) Gather user input
+    selected = input("Enter a skin_type from the list above: ").strip()
+
+    # Validate user input
+    while selected not in skin_types:
+        print("\nThat skin_type is not in the list.")
+        selected = input("Enter a skin_type from the list above: ").strip()
+
+    # 3) Filter animals
+    filtered_animals = filter_by_skin_type(animals, selected)
+
+    # 4) Build HTML
+    animals_output = build_animals_output(filtered_animals)
+
+    # Optional: show which filter was used by replacing a placeholder if you have one
     new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_output)
 
+    # 5) Write output file
     write_file("animals.html", new_html)
-    print("animals.html has been created.")
+
+    print("\nanimals.html has been created.")
+    print("Filter used: skin_type =", selected)
+    print("Animals shown:", len(filtered_animals))
 
 
 main()
