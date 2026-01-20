@@ -5,28 +5,31 @@ def main():
     with open("animals_data.json", "r", encoding="utf-8") as f:
         animals = json.load(f)
 
-    animals_output = ""   # holds ALL animals
+    animals_output = ""
 
     for animal in animals:
         animals_output += '<li class="cards__item">\n'
 
-        # Name
+        # Title (Name)
         if "name" in animal:
-            animals_output += "Name: " + animal["name"] + "<br/>\n"
+            animals_output += '  <div class="card__title">' + animal["name"] + '</div>\n'
+
+        animals_output += '  <p class="card__text">\n'
 
         # Diet
         if "characteristics" in animal and "diet" in animal["characteristics"]:
-            animals_output += "Diet: " + animal["characteristics"]["diet"] + "<br/>\n"
+            animals_output += '      <strong>Diet:</strong> ' + animal["characteristics"]["diet"] + '<br/>\n'
 
         # First location
         if "locations" in animal and len(animal["locations"]) > 0:
-            animals_output += "Location: " + animal["locations"][0] + "<br/>\n"
+            animals_output += '      <strong>Location:</strong> ' + animal["locations"][0] + '<br/>\n'
 
         # Type
         if "characteristics" in animal and "type" in animal["characteristics"]:
-            animals_output += "Type: " + animal["characteristics"]["type"] + "<br/>\n"
+            animals_output += '      <strong>Type:</strong> ' + animal["characteristics"]["type"] + '<br/>\n'
 
-        animals_output += "</li>\n"
+        animals_output += '  </p>\n'
+        animals_output += '</li>\n\n'
 
     # Read HTML template
     with open("animals_template.html", "r", encoding="utf-8") as f:
