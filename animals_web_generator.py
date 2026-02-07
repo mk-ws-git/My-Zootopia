@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 
 API_URL = "https://api.api-ninjas.com/v1/animals"
 
@@ -144,10 +145,14 @@ def filter_by_skin_type(animals, selected_skin_type):
 
 
 def main():
-    """Fetch animal data via API and write animals.html"""
+    """Ask for user input, fetch animal data via API, and write animals.html"""
     html_template = read_file("animals_template.html")
 
-    animals = fetch_animals_from_api("Fox")
+    animal_name = input("Enter a name of an animal: ").strip()
+    while animal_name == "":
+        animal_name = input("Enter a name of an animal: ").strip()
+
+    animals = fetch_animals_from_api(animal_name)
     animals_output = build_animals_output(animals)
 
     if "__REPLACE_ANIMALS_INFO__" in html_template:
@@ -160,3 +165,6 @@ def main():
 
     write_file("animals.html", new_html)
     print("Website was successfully generated to the file animals.html.")
+
+if __name__ == "__main__":
+    main()
