@@ -116,32 +116,41 @@ def write_file(filepath, content):
         f.write(content)
 
 
-def get_skin_types(animals):
-    """Return a sorted list of unique skin_type values."""
-    skin_types_set = set()
+# def get_skin_types(animals):
+#     """Return a sorted list of unique skin_type values."""
+#     skin_types_set = set()
+#
+#     for animal in animals:
+#         if "characteristics" in animal and "skin_type" in animal["characteristics"]:
+#             skin_type = animal["characteristics"]["skin_type"]
+#             if isinstance(skin_type, str) and skin_type.strip() != "":
+#                 skin_types_set.add(skin_type.strip())
+#
+#     return sorted(list(skin_types_set))
 
-    for animal in animals:
-        if "characteristics" in animal and "skin_type" in animal["characteristics"]:
-            skin_type = animal["characteristics"]["skin_type"]
-            if isinstance(skin_type, str) and skin_type.strip() != "":
-                skin_types_set.add(skin_type.strip())
 
-    return sorted(list(skin_types_set))
+# def filter_by_skin_type(animals, selected_skin_type):
+#     """Return only animals that match the selected skin_type."""
+#     filtered = []
+#
+#     for animal in animals:
+#         if "characteristics" in animal and "skin_type" in animal["characteristics"]:
+#             skin_type = animal["characteristics"]["skin_type"]
+#             # compare trimmed values so minor whitespace differences don't prevent a match
+#             if isinstance(skin_type, str) and isinstance(selected_skin_type, str) and \
+#                skin_type.strip() == selected_skin_type:
+#                 filtered.append(animal)
+#
+#     return filtered
 
-
-def filter_by_skin_type(animals, selected_skin_type):
-    """Return only animals that match the selected skin_type."""
-    filtered = []
-
-    for animal in animals:
-        if "characteristics" in animal and "skin_type" in animal["characteristics"]:
-            skin_type = animal["characteristics"]["skin_type"]
-            # compare trimmed values so minor whitespace differences don't prevent a match
-            if isinstance(skin_type, str) and isinstance(selected_skin_type, str) and \
-               skin_type.strip() == selected_skin_type:
-                filtered.append(animal)
-
-    return filtered
+def animal_not_found_html(animal_name):
+    """Return a not-found message as HTML."""
+    safe = (
+        animal_name.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+    return '<h2 class="not-found">The animal "' + safe + "\" doesn't exist.</h2>\n"
 
 
 def main():
@@ -153,7 +162,11 @@ def main():
         animal_name = input("Enter a name of an animal: ").strip()
 
     animals = fetch_animals_from_api(animal_name)
-    animals_output = build_animals_output(animals)
+
+    if len(animals) == 0:
+        animals_output = animal_not_found_html(animal_name)
+    else:
+        animals_output = build_animals_output(animals)
 
     if "__REPLACE_ANIMALS_INFO__" in html_template:
         new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_output)
