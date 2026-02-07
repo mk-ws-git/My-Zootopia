@@ -1,4 +1,29 @@
 import json
+import requests
+
+API_URL = "https://api.api-ninjas.com/v1/animals"
+
+
+def fetch_animals_from_api(animal_name):
+    api_key = os.environ.get("NINJAS_API_KEY")
+    if not api_key:
+        raise RuntimeError("NINJAS_API_KEY is not set")
+
+    response = requests.get(
+        API_URL,
+        params={"name": animal_name},
+        headers={"X-Api-Key": api_key},
+        timeout=20,
+    )
+
+    print("Status code:", response.status_code)
+    response.raise_for_status()
+
+    data = response.json()
+
+    if isinstance(data, list):
+        return data
+    return []
 
 
 def get_nested_value(obj, keys):
@@ -119,57 +144,19 @@ def filter_by_skin_type(animals, selected_skin_type):
 
 
 def main():
-    """Prompt for skin_type, then generate animals.html."""
-    animals = json.loads(read_file("animals_data.json"))
+    """Fetch animal data via API and write animals.html"""
     html_template = read_file("animals_template.html")
 
-    # 1) Show available skin types
-    skin_types = get_skin_types(animals)
+    animals = fetch_animals_from_api("Fox")
+    animals_output = build_animals_output(animals)
 
-    print("Available skin_type values:")
-    for skin_type in skin_types:
-        print("-", skin_type)
-
-    # Animals missing skin_type will NOT be included in filtered results.
-    print("\nNote: animals with missing skin_type will be excluded.\n")
-
-    # 2) Gather user input
-    selected = input("Enter a skin_type from the list above: ").strip()
-
-    # Validate user input
-    while selected not in skin_types:
-        print("\nThat skin_type is not in the list.")
-        selected = input("Enter a skin_type from the list above: ").strip()
-
-    # 3) Filter animals
-    filtered_animals = filter_by_skin_type(animals, selected)
-
-    # 4) Build HTML
-    animals_output = build_animals_output(filtered_animals)
-
-    # Optional: show which filter was used by replacing a placeholder if you have one
-    # Make this defensive: ensure new_html is always defined even if placeholder missing
     if "__REPLACE_ANIMALS_INFO__" in html_template:
         new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_output)
     else:
-        # try to insert before the first closing </ul> (the cards list)
         if "</ul>" in html_template:
             new_html = html_template.replace("</ul>", animals_output + "\n</ul>", 1)
         else:
-            # fallback: append the animals output to the end of the template
             new_html = html_template + "\n" + animals_output
 
-    # 5) Write output file (wrapped for clearer error message on failure)
-    try:
-        write_file("animals.html", new_html)
-    except Exception as e:
-        print("Failed to write animals.html:", e)
-        raise
-
-    print("\nanimals.html has been created.")
-    print("Filter used: skin_type =", selected)
-    print("Animals shown:", len(filtered_animals))
-
-
-if __name__ == '__main__':
-    main()
+    write_file("animals.html", new_html)
+    print("Website was successfully generated to the file animals.html.")
